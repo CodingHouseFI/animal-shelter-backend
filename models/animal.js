@@ -13,5 +13,20 @@ var animalSchema = Mongoose.Schema({
   photo: String
 });
 
+animalSchema.methods.toggleAvailable = function(cb) {
+  this.isAvailable = !this.isAvailable;
+  this.save(cb);
+};
+
 var Animal = Mongoose.model('Animal', animalSchema);
+
 module.exports = Animal;
+
+
+// var cat = new Animal({ ....})
+
+// cat.save(function(err, savedCat){
+  
+// })
+
+

@@ -11,7 +11,8 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  Client.create(req.body, function(err, client) {
+  var client = new Client(req.body);
+  client.save(function(err, client) {
     res.status(err ? 400 : 200).send(err || client);
   });
 });
@@ -38,7 +39,9 @@ router.put('/:clientId/adopt/:animalId', function(req, res) {
 router.put('/:clientId/unadopt/:animalId', function(req, res) {
   Client.findById(req.params.clientId, function(err, client) {
     Animal.findById(req.params.animalId, function(err, animal) {
-      if( client.pets.indexOf(animal._id) !== -1){
+      if( client.pets.indexOf(animal._id) === -1){
+        res.status(400).send("client doesn't have that animal");
+      } else {
         animal.isAvailable = true;
         client.pets.splice(client.pets.indexOf(animal._id), 1);
         client.save(function(err, savedClient) {
@@ -46,8 +49,6 @@ router.put('/:clientId/unadopt/:animalId', function(req, res) {
             res.send(savedClient);
           });
         }); 
-      } else {
-        res.status(400).send('animal not found');
       }
     });
   });

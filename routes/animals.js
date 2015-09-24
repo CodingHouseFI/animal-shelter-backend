@@ -15,6 +15,14 @@ router.post('/', function(req, res) {
   });
 });
 
+router.put('/toggleAvailable/:mongoId', function(req, res) {
+  Animal.findById(req.params.mongoId, function(err, animal) {
+    animal.toggleAvailable(function(err, savedAnimal) {
+      res.send(savedAnimal);
+    });
+  });
+});
+
 router.put('/:mongoId', function(req, res) {
   Animal.update({_id: req.params.mongoId}, req.body, function(err, animal) {
     if(err || !animal) {
@@ -34,5 +42,6 @@ router.delete('/:mongoId', function(req, res) {
     }
   });
 });
+
 
 module.exports = router;
